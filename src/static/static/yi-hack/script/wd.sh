@@ -329,6 +329,13 @@ if [ ! -z $RTSP_PORT ]; then
 fi
 
 RTSP_ALT=$(get_config RTSP_ALT)
+# Match service.sh: it starts rRTSPServer when RTSP_ALT is empty or unknown,
+# or when go2rtc is selected but its binary is missing.
+if [[ "$RTSP_ALT" == "go2rtc" ]] && [ ! -f $YI_HACK_PREFIX/bin/go2rtc ]; then
+    RTSP_ALT=standard
+elif [[ "$RTSP_ALT" != "alternative" ]] && [[ "$RTSP_ALT" != "go2rtc" ]]; then
+    RTSP_ALT=standard
+fi
 
 echo "$(date +'%Y-%m-%d %H:%M:%S') - Starting RTSP watchdog..." >> $LOG_FILE
 
